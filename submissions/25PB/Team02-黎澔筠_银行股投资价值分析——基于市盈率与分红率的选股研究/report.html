@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>银行股投资价值分析</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif; line-height: 1.65; color: #1f2933; max-width: 980px; margin: 36px auto; padding: 0 28px 56px; background: #fff; }
+h1, h2, h3 { color: #111827; line-height: 1.25; margin-top: 1.5em; }
+h1 { font-size: 30px; border-bottom: 2px solid #111827; padding-bottom: 12px; }
+h2 { font-size: 23px; border-bottom: 1px solid #d8dee4; padding-bottom: 8px; }
+h3 { font-size: 18px; }
+table { border-collapse: collapse; width: 100%; margin: 16px 0 24px; font-size: 14px; }
+th, td { border: 1px solid #d0d7de; padding: 8px 10px; vertical-align: top; }
+th { background: #f6f8fa; font-weight: 700; }
+blockquote { border-left: 4px solid #6b7280; background: #f8fafc; padding: 10px 16px; margin: 16px 0; color: #374151; }
+img { max-width: 100%; height: auto; display: block; margin: 14px auto 22px; }
+code { background: #f6f8fa; padding: 2px 5px; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+pre code { display: block; padding: 14px; overflow-x: auto; }
+hr { border: 0; border-top: 1px solid #d8dee4; margin: 28px 0; }
+</style>
+</head>
+<body>
+<h1 id="银行股投资价值分析基于市盈率与分红率的选股研究">银行股投资价值分析：基于市盈率与分红率的选股研究</h1>
+
+<blockquote>
+  <p><strong>分析日期</strong>：2026-05-25<br />
+  <strong>数据来源</strong>：AKShare（雪球/东方财富接口）<br />
+  <strong>分析工具</strong>：Python (akshare, pandas, matplotlib)</p>
+</blockquote>
+
+<hr />
+
+<h2 id="一我们在帮谁解决什么问题">一、我们在帮谁解决什么问题</h2>
+
+<h3 id="决策主体">决策主体</h3>
+
+<p><strong>主要读者：个人投资者（散户）</strong></p>
+
+<p>A 股有 38 家上市银行，总市值超过 12 万亿元。个人投资者在配置银行股时面临一个非常具体的决策困境：</p>
+
+<table>
+<thead>
+<tr>
+  <th>决策场景</th>
+  <th>投资者面临的困惑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>选股决策</strong></td>
+  <td>国有大行、股份制银行、城商行、农商行——到底哪类银行的投资性价比最高？</td>
+</tr>
+<tr>
+  <td><strong>估值判断</strong></td>
+  <td>银行股 PE 普遍在 4-8 倍，是"便宜"还是"价值陷阱"？</td>
+</tr>
+<tr>
+  <td><strong>回报预期</strong></td>
+  <td>股息率 3%-7% 不等，哪些是"真金白银"的高分红，哪些只是股价跌出来的高股息率？</td>
+</tr>
+<tr>
+  <td><strong>买卖时机</strong></td>
+  <td>当前股价水平下，哪些银行股值得买入并长期持有？</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="本报告希望回答的问题">本报告希望回答的问题</h3>
+
+<ol>
+<li>10 支代表性银行股中，谁的市盈率最低（最便宜）、谁的股息率最高（现金回报最好）？</li>
+<li>不同类型银行（国有/股份制/城商行/农商行）在估值和分红上有什么显著差异？</li>
+<li>2023 年分红新规出台后，银行股的分红行为是否发生变化？</li>
+<li>综合来看，哪些银行股在当前时点最具投资价值？</li>
+</ol>
+
+<hr />
+
+<h2 id="二政策与市场背景">二、政策与市场背景</h2>
+
+<h3 id="核心政策文件">核心政策文件</h3>
+
+<p><strong>《上市公司监管指引第 3 号——上市公司现金分红（2023 年修订）》</strong></p>
+
+<ul>
+<li><strong>发布机构</strong>：中国证券监督管理委员会</li>
+<li><strong>发布时间</strong>：2023 年 12 月 15 日</li>
+<li><strong>核心条款</strong>：</li>
+</ul>
+
+<blockquote>
+  <p>上市公司应当牢固树立回报股东的意识，严格依照《公司法》《证券法》和公司章程的规定，健全现金分红制度，保持现金分红政策的一致性、合理性和稳定性。</p>
+</blockquote>
+
+<blockquote>
+  <p>上市公司最近三个会计年度实现的年均可分配利润不低于人民币 1000 万元，且最近三个会计年度累计现金分红总额低于年均可分配利润的 30% 的，上市所在地中国证监会派出机构应当对公司进行约谈。</p>
+</blockquote>
+
+<ul>
+<li><strong>配套强化</strong>：2024 年 3 月，证监会发布《关于加强上市公司监管的意见（一）》，明确对多年不分红或分红比例偏低的公司实施 <strong>ST 风险警示</strong>，监管压力从"约谈"升级为"公开惩戒"。</li>
+</ul>
+
+<h3 id="政策目标">政策目标</h3>
+
+<p>新规的分层政策逻辑：</p>
+
+<ul>
+<li><strong>直接目标</strong>：提升 A 股现金分红比例，保障投资者获得真实的现金回报</li>
+<li><strong>中间目标</strong>：纠正"重融资、轻回报"的市场生态，倒逼上市公司重视股东回报</li>
+<li><strong>终极目标</strong>：提升 A 股对长期资金（保险、养老金）的吸引力，促进资本市场健康发展</li>
+</ul>
+
+<h3 id="统计背景银行板块在-a-股分红中的核心地位">统计背景：银行板块在 A 股分红中的核心地位</h3>
+
+<p>银行股是 A 股分红的绝对主力，其分红行为直接影响全市场分红水平：</p>
+
+<ul>
+<li>根据中国上市公司协会、交易所等公开披露，A 股现金分红覆盖面持续提升，2024 年度现金分红总额保持在万亿元以上；银行业长期属于全市场分红贡献较高的行业之一</li>
+<li>本报告样本中的 10 家代表性上市银行均有近年现金分红记录，样本平均股息率为 <strong>4.55%</strong>，明显高于多数宽基指数的平均股息率水平</li>
+<li>本报告样本平均市净率为 <strong>0.68 倍</strong>，说明银行股整体存在明显的破净现象，市场对其资产质量和未来盈利增长仍有折价定价</li>
+<li>因此，银行股并非简单的"高分红资产"，而是同时具有高股息、低估值和资产质量折价三重特征，适合用 PE、PB、股息率与 ROE 进行交叉比较</li>
+</ul>
+
+<blockquote>
+  <p>口径说明：本节全市场背景用于说明研究动机；后文排名、均值、图表和结论均来自本报告 <code>data/bank_stocks_analysis.csv</code> 与 <code>data/bank_stocks_analysis_full.csv</code> 的样本数据。</p>
+</blockquote>
+
+<h3 id="为什么用市盈率和股息率判断银行股">为什么用市盈率和股息率判断银行股</h3>
+
+<p>银行业务模式高度同质化，盈利和分红相对稳定，使 PE 和股息率成为横向对比的有效工具：</p>
+
+<table>
+<thead>
+<tr>
+  <th>指标</th>
+  <th>含义</th>
+  <th>在银行股分析中的价值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>市盈率 (PE)</strong></td>
+  <td>股价 / 每股收益</td>
+  <td>银行盈利稳定，PE 越低通常意味着越"便宜"</td>
+</tr>
+<tr>
+  <td><strong>股息率</strong></td>
+  <td>每股分红 / 股价</td>
+  <td>银行分红稳定，高股息率 = 更好的现金回报</td>
+</tr>
+<tr>
+  <td><strong>市净率 (PB)</strong></td>
+  <td>股价 / 每股净资产</td>
+  <td>银行是资产驱动型，PB&lt;1 意味着股价跌破净资产</td>
+</tr>
+<tr>
+  <td><strong>ROE</strong></td>
+  <td>净利润 / 净资产</td>
+  <td>衡量银行用股东的钱赚钱的效率</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="为什么用市盈率和股息率判断银行股-2">为什么用市盈率和股息率判断银行股</h3>
+
+<table>
+<thead>
+<tr>
+  <th>指标</th>
+  <th>含义</th>
+  <th>在银行股分析中的价值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>市盈率 (PE)</strong></td>
+  <td>股价 / 每股收益，反映估值贵贱</td>
+  <td>银行盈利稳定，PE 越低通常意味着越"便宜"</td>
+</tr>
+<tr>
+  <td><strong>股息率</strong></td>
+  <td>每股分红 / 股价，反映现金回报</td>
+  <td>银行分红稳定，高股息率意味着更好的现金回报</td>
+</tr>
+<tr>
+  <td><strong>市净率 (PB)</strong></td>
+  <td>股价 / 每股净资产，反映资产折价</td>
+  <td>银行是资产驱动型，PB&lt;1 意味着股价低于净资产</td>
+</tr>
+<tr>
+  <td><strong>ROE</strong></td>
+  <td>净利润 / 净资产，反映盈利能力</td>
+  <td>衡量银行用股东的钱赚钱的效率</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="选股范围">选股范围</h3>
+
+<p>从 A 股 38 家上市银行中，选取 10 支代表性银行，覆盖四大类型：</p>
+
+<table>
+<thead>
+<tr>
+  <th>类型</th>
+  <th>选取股票</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>国有大行（4 家）</td>
+  <td>工商银行、建设银行、农业银行、中国银行</td>
+</tr>
+<tr>
+  <td>股份制银行（3 家）</td>
+  <td>招商银行、兴业银行、光大银行</td>
+</tr>
+<tr>
+  <td>城商行（2 家）</td>
+  <td>宁波银行、江苏银行</td>
+</tr>
+<tr>
+  <td>农商行（1 家）</td>
+  <td>常熟银行</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h2 id="三数据来源与处理">三、数据来源与处理</h2>
+
+<h3 id="数据获取">数据获取</h3>
+
+<p>使用 AKShare 开源金融数据库，通过以下接口获取数据：</p>
+
+<table>
+<thead>
+<tr>
+  <th>数据类型</th>
+  <th>AKShare 接口</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>个股实时行情</td>
+  <td><code>stock_individual_spot_xq()</code></td>
+  <td>获取 PE、PB、股息率、股价等（雪球数据源）</td>
+</tr>
+<tr>
+  <td>历史分红明细</td>
+  <td><code>stock_history_dividend_detail()</code></td>
+  <td>获取历年分红记录</td>
+</tr>
+<tr>
+  <td>财务指标</td>
+  <td><code>stock_financial_analysis_indicator()</code></td>
+  <td>获取 ROE、股息发放率等</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="核心指标构造">核心指标构造</h3>
+
+<ul>
+<li><strong>市盈率 TTM</strong>：直接取自行情数据，TTM（滚动十二个月）口径更平滑</li>
+<li><strong>股息率 TTM</strong>：近十二个月每股分红 / 当前股价</li>
+<li><strong>综合评分</strong>：PE 排名（35%权重）+ 股息率排名（35%）+ PB 排名（15%）+ ROE 排名（15%）</li>
+</ul>
+
+<hr />
+
+<h2 id="四统计事实核心部分">四、统计事实（核心部分）</h2>
+
+<h3 id="41-整体概览10-支银行股核心指标">4.1 整体概览：10 支银行股核心指标</h3>
+
+<table>
+<thead>
+<tr>
+  <th style="text-align:center;">排名</th>
+  <th>名称</th>
+  <th>类型</th>
+  <th style="text-align:right;">市盈率TTM</th>
+  <th style="text-align:right;">市净率</th>
+  <th style="text-align:right;">股息率TTM</th>
+  <th style="text-align:right;">ROE(%)</th>
+  <th style="text-align:center;">综合评分</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:center;">1</td>
+  <td><strong>兴业银行</strong></td>
+  <td>股份制</td>
+  <td style="text-align:right;">4.82</td>
+  <td style="text-align:right;">0.45</td>
+  <td style="text-align:right;"><strong>6.04%</strong></td>
+  <td style="text-align:right;">2.61</td>
+  <td style="text-align:center;">1.75</td>
+</tr>
+<tr>
+  <td style="text-align:center;">2</td>
+  <td><strong>光大银行</strong></td>
+  <td>股份制</td>
+  <td style="text-align:right;">4.84</td>
+  <td style="text-align:right;">0.36</td>
+  <td style="text-align:right;"><strong>5.65%</strong></td>
+  <td style="text-align:right;">1.99</td>
+  <td style="text-align:center;">2.90</td>
+</tr>
+<tr>
+  <td style="text-align:center;">3</td>
+  <td><strong>江苏银行</strong></td>
+  <td>城商行</td>
+  <td style="text-align:right;">5.80</td>
+  <td style="text-align:right;">0.77</td>
+  <td style="text-align:right;">5.06%</td>
+  <td style="text-align:right;">3.07</td>
+  <td style="text-align:center;">4.30</td>
+</tr>
+<tr>
+  <td style="text-align:center;">4</td>
+  <td><strong>招商银行</strong></td>
+  <td>股份制</td>
+  <td style="text-align:right;">6.18</td>
+  <td style="text-align:right;">0.82</td>
+  <td style="text-align:right;">5.46%</td>
+  <td style="text-align:right;">2.95</td>
+  <td style="text-align:center;">4.75</td>
+</tr>
+<tr>
+  <td style="text-align:center;">5</td>
+  <td>常熟银行</td>
+  <td>农商行</td>
+  <td style="text-align:right;">5.46</td>
+  <td style="text-align:right;">0.72</td>
+  <td style="text-align:right;">3.78%</td>
+  <td style="text-align:right;">3.68</td>
+  <td style="text-align:center;">5.45</td>
+</tr>
+<tr>
+  <td style="text-align:center;">6</td>
+  <td>工商银行</td>
+  <td>国有大行</td>
+  <td style="text-align:right;">6.88</td>
+  <td style="text-align:right;">0.65</td>
+  <td style="text-align:right;">4.32%</td>
+  <td style="text-align:right;">2.01</td>
+  <td style="text-align:center;">5.85</td>
+</tr>
+<tr>
+  <td style="text-align:center;">7</td>
+  <td>宁波银行</td>
+  <td>城商行</td>
+  <td style="text-align:right;">6.78</td>
+  <td style="text-align:right;">0.88</td>
+  <td style="text-align:right;">3.88%</td>
+  <td style="text-align:right;">3.18</td>
+  <td style="text-align:center;">6.35</td>
+</tr>
+<tr>
+  <td style="text-align:center;">8</td>
+  <td>农业银行</td>
+  <td>国有大行</td>
+  <td style="text-align:right;">7.66</td>
+  <td style="text-align:right;">0.80</td>
+  <td style="text-align:right;">3.88%</td>
+  <td style="text-align:right;">2.28</td>
+  <td style="text-align:center;">7.15</td>
+</tr>
+<tr>
+  <td style="text-align:center;">9</td>
+  <td>建设银行</td>
+  <td>国有大行</td>
+  <td style="text-align:right;">7.76</td>
+  <td style="text-align:right;">0.75</td>
+  <td style="text-align:right;">3.84%</td>
+  <td style="text-align:right;">2.30</td>
+  <td style="text-align:center;">8.10</td>
+</tr>
+<tr>
+  <td style="text-align:center;">10</td>
+  <td>中国银行</td>
+  <td>国有大行</td>
+  <td style="text-align:right;">7.75</td>
+  <td style="text-align:right;">0.70</td>
+  <td style="text-align:right;">3.83%</td>
+  <td style="text-align:right;">1.82</td>
+  <td style="text-align:center;">8.40</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+  <p><strong>关键发现</strong>：股份制银行在估值（PE）和分红回报（股息率）两个维度上全面领先。前 4 名中股份制银行占据 3 席。国有大行虽然规模最大、经营最稳健，但估值相对偏高、股息率偏低，投资性价比不如股份制银行。</p>
+</blockquote>
+
+<hr />
+
+<h3 id="42-核心图表分析">4.2 核心图表分析</h3>
+
+<h4 id="图-1市盈率-vs-股息率散点图">图 1：市盈率 vs 股息率散点图</h4>
+
+<p><img src="pe_dividend_scatter.png" alt="市盈率 vs 股息率" /></p>
+
+<p><strong>解读</strong>：
+- <strong>左下角区域是最优区间</strong>：低市盈率 + 高股息率。兴业银行和光大银行明显处于最优位置
+- 红色虚线为平均股息率（4.55%），蓝色虚线为平均市盈率（6.49）
+- 气泡大小代表流通市值——国有大行（工商银行、农业银行）市值最大但处于图表右下方（估值偏贵、股息偏低）
+- 招行和江苏银行的股息率处于中上水平，估值适中</p>
+
+<h4 id="图-2综合排名柱状图">图 2：综合排名柱状图</h4>
+
+<p><img src="comprehensive_ranking.png" alt="综合排名" /></p>
+
+<p><strong>解读</strong>：
+- 蓝色柱（市盈率）：兴业银行（4.82）和光大银行（4.84）最低，意味着每赚 1 元钱，投资者只需支付不到 5 元
+- 橙色柱（股息率）：兴业银行（6.04%）和光大银行（5.65%）最高，意味着每投入 100 元，每年可拿回超过 5.6 元现金分红
+- 国有大行的股息率集中在 3.8%-4.3%，显著低于股份制银行</p>
+
+<h4 id="图-3多维度分析">图 3：多维度分析</h4>
+
+<p><img src="multi_dimension_analysis.png" alt="多维度" /></p>
+
+<p><strong>解读</strong>：
+- <strong>市净率 vs ROE</strong>（左下子图）：理想位置是低 PB + 高 ROE。常熟银行 ROE 最高（3.68%），但股息率偏低；招商银行在 PB 和 ROE 之间取得较好平衡
+- <strong>综合评分排名</strong>（右下子图）：排名越靠前，综合投资价值越高</p>
+
+<hr />
+
+<h3 id="43-分组对比不同类型银行差异显著">4.3 分组对比：不同类型银行差异显著</h3>
+
+<table>
+<thead>
+<tr>
+  <th>类型</th>
+  <th style="text-align:center;">平均市盈率</th>
+  <th style="text-align:center;">平均股息率</th>
+  <th style="text-align:center;">平均市净率</th>
+  <th style="text-align:center;">平均ROE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>股份制银行</td>
+  <td style="text-align:center;"><strong>5.15</strong></td>
+  <td style="text-align:center;"><strong>5.72%</strong></td>
+  <td style="text-align:center;"><strong>0.54</strong></td>
+  <td style="text-align:center;">2.52%</td>
+</tr>
+<tr>
+  <td>城商行</td>
+  <td style="text-align:center;">6.29</td>
+  <td style="text-align:center;">4.47%</td>
+  <td style="text-align:center;">0.83</td>
+  <td style="text-align:center;">3.13%</td>
+</tr>
+<tr>
+  <td>农商行</td>
+  <td style="text-align:center;">5.46</td>
+  <td style="text-align:center;">3.78%</td>
+  <td style="text-align:center;">0.72</td>
+  <td style="text-align:center;">3.68%</td>
+</tr>
+<tr>
+  <td>国有大行</td>
+  <td style="text-align:center;">7.52</td>
+  <td style="text-align:center;">3.97%</td>
+  <td style="text-align:center;">0.70</td>
+  <td style="text-align:center;">2.10%</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+  <p><strong>核心发现</strong>：
+  - <strong>股份制银行是"性价比之王"</strong>：最低的市盈率（5.15）+ 最高的股息率（5.72%）+ 最低的市净率（0.54）
+  - <strong>国有大行"稳健但贵"</strong>：市盈率最高（7.52）、股息率偏低（3.97%），反映市场对其资产质量和系统重要性的溢价
+  - <strong>城商行/农商行"高成长低分红"</strong>：ROE 较高（3%+），但分红力度不如股份制银行</p>
+</blockquote>
+
+<hr />
+
+<h3 id="44-分红历史分析谁分红最稳定">4.4 分红历史分析：谁分红最稳定？</h3>
+
+<table>
+<thead>
+<tr>
+  <th>名称</th>
+  <th style="text-align:center;">近5年分红次数</th>
+  <th style="text-align:center;">近5年累计派息(元/10股)</th>
+  <th style="text-align:center;">最近一次分红(元/10股)</th>
+  <th style="text-align:center;">股息发放率(%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>招商银行</td>
+  <td style="text-align:center;">5</td>
+  <td style="text-align:center;">84.85</td>
+  <td style="text-align:center;">10.13</td>
+  <td style="text-align:center;">~30%</td>
+</tr>
+<tr>
+  <td>兴业银行</td>
+  <td style="text-align:center;">5</td>
+  <td style="text-align:center;">51.25</td>
+  <td style="text-align:center;">5.65</td>
+  <td style="text-align:center;">~25%</td>
+</tr>
+<tr>
+  <td>宁波银行</td>
+  <td style="text-align:center;">6</td>
+  <td style="text-align:center;">33.00</td>
+  <td style="text-align:center;">3.00</td>
+  <td style="text-align:center;">~18%</td>
+</tr>
+<tr>
+  <td>江苏银行</td>
+  <td style="text-align:center;">6</td>
+  <td style="text-align:center;">21.97</td>
+  <td style="text-align:center;">3.31</td>
+  <td style="text-align:center;">~28%</td>
+</tr>
+<tr>
+  <td>建设银行</td>
+  <td style="text-align:center;">7</td>
+  <td style="text-align:center;">20.68</td>
+  <td style="text-align:center;">1.86</td>
+  <td style="text-align:center;">~30%</td>
+</tr>
+<tr>
+  <td>工商银行</td>
+  <td style="text-align:center;">7</td>
+  <td style="text-align:center;">16.19</td>
+  <td style="text-align:center;">1.69</td>
+  <td style="text-align:center;">~30%</td>
+</tr>
+<tr>
+  <td>常熟银行</td>
+  <td style="text-align:center;">6</td>
+  <td style="text-align:center;">13.00</td>
+  <td style="text-align:center;">1.50</td>
+  <td style="text-align:center;">~25%</td>
+</tr>
+<tr>
+  <td>中国银行</td>
+  <td style="text-align:center;">7</td>
+  <td style="text-align:center;">12.38</td>
+  <td style="text-align:center;">1.09</td>
+  <td style="text-align:center;">~30%</td>
+</tr>
+<tr>
+  <td>农业银行</td>
+  <td style="text-align:center;">7</td>
+  <td style="text-align:center;">12.06</td>
+  <td style="text-align:center;">1.30</td>
+  <td style="text-align:center;">~30%</td>
+</tr>
+<tr>
+  <td>光大银行</td>
+  <td style="text-align:center;">6</td>
+  <td style="text-align:center;">9.63</td>
+  <td style="text-align:center;">1.05</td>
+  <td style="text-align:center;">~25%</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+  <p><strong>关键发现</strong>：
+  - 招商银行分红金额遥遥领先，近 5 年累计每 10 股派息 84.85 元，是第二名兴业银行（51.25）的 1.66 倍
+  - 国有大行分红频次最高（7 次/5 年，含中期分红），但单次金额较低
+  - 光大银行虽然股息率很高，但累计派息绝对金额最低，说明其高股息率主要来自极低股价（3.10 元），而非高额分红</p>
+</blockquote>
+
+<hr />
+
+<h3 id="45-时间趋势分红新规前后的行为变化">4.5 时间趋势：分红新规前后的行为变化</h3>
+
+<h4 id="图-4银行股分红趋势分析">图 4：银行股分红趋势分析</h4>
+
+<p><img src="dividend_trend.png" alt="分红趋势" /></p>
+
+<p><strong>解读</strong>：</p>
+
+<ul>
+<li><p><strong>左图（各类型银行年均分红趋势）</strong>：2015-2025 年间，股份制银行的每股分红持续领先且增长最为显著，国有大行的分红在 2023 年后出现分化——部分大行因利润增速放缓而削减分红。红色虚线标注的 2023 年分红新规出台后，股份制银行的分红曲线斜率明显变陡，显示政策对优质银行分红的正面激励。</p></li>
+<li><p><strong>右图（新规前后各银行派息对比）</strong>：2023 年分红新规出台后，银行分红行为出现了明显的"分化"——招商银行（+32%）、宁波银行（+20%）大幅提高分红，显著超越政策要求；而部分国有大行（工商银行 -20.7%、建设银行 -17.1%）分红不升反降。这说明新规对不同类型银行的影响截然不同：<strong>盈利能力强的银行主动"抢跑合规"，而利润承压的银行即使面对监管压力也难以提高分红</strong>。</p></li>
+</ul>
+
+<blockquote>
+  <p><strong>核心发现</strong>：新规并非一刀切地"逼所有公司多分红"，而是加速了银行间的分化——好银行更愿意分红，差银行即使想分也没钱分。这对投资者的启示是：<strong>高股息率如果来自高分红意愿 + 高盈利能力，是真正的投资价值；如果只是股价跌出来的统计幻觉，则是价值陷阱。</strong></p>
+</blockquote>
+
+<hr />
+
+<h2 id="五结论与投资建议">五、结论与投资建议</h2>
+
+<h3 id="51-综合排名">5.1 综合排名</h3>
+
+<table>
+<thead>
+<tr>
+  <th style="text-align:center;">评级</th>
+  <th>股票</th>
+  <th>核心理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:center;">★★★★★</td>
+  <td><strong>兴业银行</strong></td>
+  <td>PE 最低（4.82）、股息率最高（6.04%）、PB 极低（0.45），性价比突出</td>
+</tr>
+<tr>
+  <td style="text-align:center;">★★★★★</td>
+  <td><strong>光大银行</strong></td>
+  <td>PE 极低（4.84）、股息率高（5.65%）、PB 最低（0.36），适合"捡烟蒂"策略</td>
+</tr>
+<tr>
+  <td style="text-align:center;">★★★★</td>
+  <td><strong>江苏银行</strong></td>
+  <td>PE 合理（5.80）、股息率较高（5.06%）、ROE 在城商行中表现出色</td>
+</tr>
+<tr>
+  <td style="text-align:center;">★★★★</td>
+  <td><strong>招商银行</strong></td>
+  <td>零售之王，分红额最高、品牌溢价带来稳定性，但 PE（6.18）和 PB（0.82）在银行股中偏贵</td>
+</tr>
+<tr>
+  <td style="text-align:center;">★★★</td>
+  <td>常熟银行</td>
+  <td>农商行代表，ROE 最高（3.68%），但股息率偏低（3.78%）</td>
+</tr>
+<tr>
+  <td style="text-align:center;">★★★</td>
+  <td>工商银行</td>
+  <td>宇宙行，绝对安全但估值偏贵（PE 6.88），股息率中等（4.32%）</td>
+</tr>
+<tr>
+  <td style="text-align:center;">★★</td>
+  <td>宁波银行</td>
+  <td>ROE 不错（3.18%）但 PB 最高（0.88），安全边际不足</td>
+</tr>
+<tr>
+  <td style="text-align:center;">★★</td>
+  <td>农业银行</td>
+  <td>PE 偏高（7.66），股息率偏低（3.88%），投资性价比一般</td>
+</tr>
+<tr>
+  <td style="text-align:center;">★</td>
+  <td>建设银行</td>
+  <td>PE 最高（7.76），股息率偏低（3.84%），短期内非最优选择</td>
+</tr>
+<tr>
+  <td style="text-align:center;">★</td>
+  <td>中国银行</td>
+  <td>PE 偏高（7.75），ROE 最低（1.82%），盈利能力在 10 支中最弱</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="52-核心结论">5.2 核心结论</h3>
+
+<ol>
+<li><p><strong>想买"便宜且分红多"的银行股</strong> → 首选<strong>兴业银行</strong>和<strong>光大银行</strong>，两者 PE 不到 5 倍、股息率超过 5.6%，是 A 股银行板块的"价值洼地"</p></li>
+<li><p><strong>想买"品质好且愿意付溢价"的银行股</strong> → 选<strong>招商银行</strong>，虽然 PE 和 PB 在银行股中偏贵，但其零售业务护城河深、分红金额行业第一</p></li>
+<li><p><strong>国有大行的尴尬</strong>：工商、建设、农业、中国四大行的 PE 反而高于股份制银行（7-8 倍 vs 4-5 倍），股息率反而更低（3.8%-4.3% vs 5.5%-6.0%）。这与直觉相反——"大而不倒"的安全性已被市场定价，反而拉低了性价比</p></li>
+</ol>
+
+<h3 id="53-不同投资策略的选择建议">5.3 不同投资策略的选择建议</h3>
+
+<table>
+<thead>
+<tr>
+  <th>投资风格</th>
+  <th>推荐股票</th>
+  <th>关注指标</th>
+  <th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>深度价值（格雷厄姆式）</td>
+  <td>光大银行</td>
+  <td>PB 0.36</td>
+  <td>股价仅为净资产的 36%，安全边际极大</td>
+</tr>
+<tr>
+  <td>红利再投资</td>
+  <td>兴业银行</td>
+  <td>股息率 6.04%</td>
+  <td>分红高且稳定，适合复利积累</td>
+</tr>
+<tr>
+  <td>成长价值（GARP）</td>
+  <td>江苏银行</td>
+  <td>ROE 3.07%</td>
+  <td>城商行中成长性与分红兼顾</td>
+</tr>
+<tr>
+  <td>稳健蓝筹</td>
+  <td>招商银行</td>
+  <td>品牌溢价</td>
+  <td>零售银行龙头，穿越周期的能力强</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h2 id="六局限性说明">六、局限性说明</h2>
+
+<ol>
+<li><p><strong>估值指标单一</strong>：仅使用市盈率和股息率判断，未纳入不良贷款率、拨备覆盖率、资本充足率等银行特有的风险指标</p></li>
+<li><p><strong>静态分析</strong>：使用的是 TTM（过去十二个月）数据，未包含对未来盈利增长或分红的预测</p></li>
+<li><p><strong>未考虑市场情绪</strong>：银行股估值长期偏低有结构性原因（市场对资产质量的担忧、利率下行周期等），低 PE 不必然意味着股价会回归</p></li>
+<li><p><strong>分红可持续性</strong>：历史分红不代表未来分红承诺，银行在盈利下滑时可能削减分红</p></li>
+<li><p><strong>数据时效</strong>：分析基于 2026 年 5 月 25 日收盘数据，股价和估值会随市场波动而变化</p></li>
+</ol>
+
+<hr />
+
+<h2 id="七数据附录">七、数据附录</h2>
+
+<p>原始数据文件：
+- <code>bank_stocks_analysis.csv</code> — 10 支银行股核心指标
+- <code>bank_stocks_analysis_full.csv</code> — 含分析指标和排名的完整数据</p>
+
+<p>数据获取代码：使用 AKShare Python 库，详见 <code>stock_individual_spot_xq()</code>、<code>stock_history_dividend_detail()</code>、<code>stock_financial_analysis_indicator()</code> 接口。</p>
+
+<h2 id="八参考资料与数据来源">八、参考资料与数据来源</h2>
+
+<ol>
+<li>中国证券监督管理委员会：《上市公司监管指引第 3 号——上市公司现金分红（2023 年修订）》，2023 年 12 月 15 日。</li>
+<li>中国证券监督管理委员会：《关于加强上市公司监管的意见（一）》，2024 年 3 月。</li>
+<li>中国上市公司协会、上海证券交易所、深圳证券交易所关于上市公司现金分红和 2024 年报的公开披露材料。</li>
+<li>AKShare 开源金融数据接口文档：个股行情、历史分红明细、财务指标等接口。</li>
+<li>本报告本地样本数据：<code>data/bank_stocks_analysis.csv</code>、<code>data/bank_stocks_analysis_full.csv</code>。</li>
+</ol>
+
+<hr />
+
+<p><em>分析报告 · 基于 AKShare 数据 · 2026-05-25</em></p>
+
+</body>
+</html>

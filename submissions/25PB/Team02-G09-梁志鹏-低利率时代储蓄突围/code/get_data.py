@@ -1,0 +1,182 @@
+"""
+数据获取脚本 - 低利率时代的储蓄突围
+获取所有分析所需的原始数据并保存至 data_raw/
+"""
+import akshare as ak
+import pandas as pd
+import numpy as np
+import os
+from datetime import datetime
+
+# 设置路径
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+RAW_DIR = os.path.join(BASE_DIR, 'data_raw')
+os.makedirs(RAW_DIR, exist_ok=True)
+
+# 下载日志
+log_file = os.path.join(BASE_DIR, 'download_log.txt')
+
+def log(status, name, info=""):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    msg = f"[{timestamp}] {status}  {name}  {info}"
+    print(msg)
+    with open(log_file, 'a', encoding='utf-8') as f:
+        f.write(msg + '\n')
+
+# ============================================================
+# 1. 存款利率历史（手动整理关键时间点数据）
+# ============================================================
+log("START", "deposit_rate", "整理存款利率历史数据")
+try:
+    # 中国人民银行历年1年期定期存款基准利率（关键时间点）
+    deposit_data = [
+        ("1993-07-11", 10.98),
+        ("1996-05-01", 9.18),
+        ("1996-08-23", 7.47),
+        ("1997-10-23", 5.67),
+        ("1998-03-25", 5.22),
+        ("1998-07-01", 4.77),
+        ("1998-12-07", 3.78),
+        ("1999-06-10", 2.25),
+        ("2002-02-21", 1.98),
+        ("2004-10-29", 2.25),
+        ("2006-08-19", 2.52),
+        ("2007-03-18", 2.79),
+        ("2007-05-19", 3.06),
+        ("2007-07-21", 3.33),
+        ("2007-08-22", 3.60),
+        ("2007-09-15", 3.87),
+        ("2007-12-21", 4.14),
+        ("2008-10-09", 3.87),
+        ("2008-10-30", 3.60),
+        ("2008-11-27", 2.52),
+        ("2008-12-23", 2.25),
+        ("2010-10-20", 2.50),
+        ("2010-12-26", 2.75),
+        ("2011-02-09", 3.00),
+        ("2011-04-06", 3.25),
+        ("2011-07-07", 3.50),
+        ("2012-06-08", 3.25),
+        ("2012-07-06", 3.00),
+        ("2014-11-22", 2.75),
+        ("2015-03-01", 2.50),
+        ("2015-05-11", 2.25),
+        ("2015-06-28", 2.00),
+        ("2015-08-26", 1.75),
+        ("2015-10-24", 1.50),
+        ("2022-09-15", 1.65),
+        ("2023-06-08", 1.55),
+        ("2023-09-01", 1.55),
+        ("2023-12-22", 1.45),
+        ("2024-07-22", 1.35),
+        ("2024-10-18", 1.10),
+        ("2025-05-20", 1.10),
+    ]
+    df_deposit = pd.DataFrame(deposit_data, columns=['日期', '1年期定存利率'])
+    df_deposit['日期'] = pd.to_datetime(df_deposit['日期'])
+    df_deposit.to_csv(os.path.join(RAW_DIR, 'deposit_rate.csv'), index=False, encoding='utf-8-sig')
+    log("SUCCESS", "deposit_rate", f"shape={df_deposit.shape}")
+except Exception as e:
+    log("FAILED", "deposit_rate", str(e))
+
+# ============================================================
+# 2. LPR数据（贷款利率，与存款利率联动）
+# ============================================================
+log("START", "lpr_rate", "获取LPR数据")
+try:
+    df_lpr = ak.macro_china_lpr()
+    df_lpr.to_csv(os.path.join(RAW_DIR, 'lpr_rate.csv'), index=False, encoding='utf-8-sig')
+    log("SUCCESS", "lpr_rate", f"shape={df_lpr.shape}")
+except Exception as e:
+    log("FAILED", "lpr_rate", str(e))
+
+# ============================================================
+# 3. 国债收益率
+# ============================================================
+log("START", "bond_yield", "获取国债收益率")
+try:
+    df_bond = ak.bond_zh_us_rate(start_date='20150101')
+    df_bond.to_csv(os.path.join(RAW_DIR, 'bond_yield.csv'), index=False, encoding='utf-8-sig')
+    log("SUCCESS", "bond_yield", f"shape={df_bond.shape}")
+except Exception as e:
+    log("FAILED", "bond_yield", str(e))
+
+# ============================================================
+# 4. CPI数据
+# ============================================================
+log("START", "cpi", "获取CPI数据")
+try:
+    df_cpi = ak.macro_china_cpi()
+    df_cpi.to_csv(os.path.join(RAW_DIR, 'cpi.csv'), index=False, encoding='utf-8-sig')
+    log("SUCCESS", "cpi", f"shape={df_cpi.shape}")
+except Exception as e:
+    log("FAILED", "cpi", str(e))
+
+# ============================================================
+# 5. M2货币供应数据
+# ============================================================
+log("START", "money_supply", "获取M2货币供应数据")
+try:
+    df_m2 = ak.macro_china_money_supply()
+    df_m2.to_csv(os.path.join(RAW_DIR, 'money_supply.csv'), index=False, encoding='utf-8-sig')
+    log("SUCCESS", "money_supply", f"shape={df_m2.shape}")
+except Exception as e:
+    log("FAILED", "money_supply", str(e))
+
+# ============================================================
+# 6. 货币基金排名与收益率
+# ============================================================
+log("START", "money_fund", "获取货币基金数据")
+try:
+    df_money = ak.fund_money_rank_em()
+    df_money.to_csv(os.path.join(RAW_DIR, 'money_fund.csv'), index=False, encoding='utf-8-sig')
+    log("SUCCESS", "money_fund", f"shape={df_money.shape}")
+except Exception as e:
+    log("FAILED", "money_fund", str(e))
+
+# ============================================================
+# 7. 开放式基金排名（用于筛选债券基金）
+# ============================================================
+log("START", "fund_rank", "获取基金排名数据")
+try:
+    df_fund = ak.fund_open_fund_rank_em()
+    df_fund.to_csv(os.path.join(RAW_DIR, 'fund_rank.csv'), index=False, encoding='utf-8-sig')
+    log("SUCCESS", "fund_rank", f"shape={df_fund.shape}")
+except Exception as e:
+    log("FAILED", "fund_rank", str(e))
+
+# ============================================================
+# 8. 黄金期货数据（AU0主力合约）
+# ============================================================
+log("START", "gold_futures", "获取黄金期货数据")
+try:
+    df_gold = ak.futures_main_sina(symbol='AU0')
+    df_gold.to_csv(os.path.join(RAW_DIR, 'gold_futures.csv'), index=False, encoding='utf-8-sig')
+    log("SUCCESS", "gold_futures", f"shape={df_gold.shape}")
+except Exception as e:
+    log("FAILED", "gold_futures", str(e))
+
+# ============================================================
+# 9. 代表性债券基金历史净值
+# ============================================================
+# 选取几只代表性债券基金
+bond_funds = [
+    ("003327", "鹏华丰禄债券"),      # 知名短债基金
+    ("006962", "中短债债券A"),       # 中短债
+    ("000032", "易方达信用债A"),     # 信用债
+    ("000191", "富国信用债A"),       # 信用债
+    ("000171", "易方达裕祥回报"),    # 二级债基
+]
+
+log("START", "bond_fund_nav", "获取债券基金历史净值")
+for code, name in bond_funds:
+    try:
+        df_nav = ak.fund_open_fund_info_em(symbol=code, indicator='单位净值走势', period='成立来')
+        df_nav['基金代码'] = code
+        df_nav['基金名称'] = name
+        df_nav.to_csv(os.path.join(RAW_DIR, f'bond_fund_{code}.csv'), index=False, encoding='utf-8-sig')
+        log("SUCCESS", f"bond_fund_{code}", f"shape={df_nav.shape}")
+    except Exception as e:
+        log("FAILED", f"bond_fund_{code}", str(e))
+
+print("\n数据获取完成，请检查 data_raw/ 目录和 download_log.txt")

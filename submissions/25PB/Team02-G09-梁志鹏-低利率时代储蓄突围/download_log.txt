@@ -1,0 +1,22 @@
+[2026-05-23 19:05:35] START  deposit_rate  整理存款利率历史数据
+[2026-05-23 19:05:35] SUCCESS  deposit_rate  shape=(41, 2)
+[2026-05-23 19:05:35] START  lpr_rate  获取LPR数据
+[2026-05-23 19:05:36] SUCCESS  lpr_rate  shape=(1572, 5)
+[2026-05-23 19:05:36] START  bond_yield  获取国债收益率
+[2026-05-23 19:05:37] SUCCESS  bond_yield  shape=(3036, 13)
+[2026-05-23 19:05:37] START  cpi  获取CPI数据
+[2026-05-23 19:05:37] SUCCESS  cpi  shape=(220, 13)
+[2026-05-23 19:05:37] START  money_supply  获取M2货币供应数据
+[2026-05-23 19:05:37] SUCCESS  money_supply  shape=(220, 10)
+[2026-05-23 19:05:37] START  money_fund  获取货币基金数据
+[2026-05-23 19:05:38] SUCCESS  money_fund  shape=(540, 18)
+[2026-05-23 19:05:38] START  fund_rank  获取基金排名数据
+[2026-05-23 19:05:41] SUCCESS  fund_rank  shape=(16955, 18)
+[2026-05-23 19:05:41] START  gold_futures  获取黄金期货数据
+[2026-05-23 19:05:41] SUCCESS  gold_futures  shape=(4472, 8)
+[2026-05-23 19:05:41] START  bond_fund_nav  获取债券基金历史净值
+[2026-05-23 19:05:41] SUCCESS  bond_fund_003327  shape=(2351, 5)
+[2026-05-23 19:05:42] SUCCESS  bond_fund_006962  shape=(1729, 5)
+[2026-05-23 19:05:42] SUCCESS  bond_fund_000032  shape=(3165, 5)
+[2026-05-23 19:05:42] SUCCESS  bond_fund_000191  shape=(3110, 5)
+[2026-05-23 19:05:42] SUCCESS  bond_fund_000171  shape=(3091, 5)

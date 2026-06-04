@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>低利率时代的储蓄突围 — 第09组 | ds2026</title>
+<style>
+  :root {
+    --bg: #f8f9fb;
+    --card-bg: #ffffff;
+    --text: #2c3e50;
+    --text-secondary: #5a6a7e;
+    --accent: #1a73e8;
+    --accent-light: #e8f0fe;
+    --border: #e2e8f0;
+    --table-stripe: #f7f9fc;
+    --quote-bg: #f0f4ff;
+    --warn: #e67e22;
+    --danger: #c0392b;
+    --success: #27ae60;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 24px 60px; }
+
+  /* Header */
+  .report-header {
+    background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 50%, #1a73e8 100%);
+    color: #fff; border-radius: 16px; padding: 44px 48px; margin: 30px 0 36px;
+    box-shadow: 0 6px 28px rgba(26,115,232,0.18);
+  }
+  .report-header h1 { font-size: 32px; font-weight: 800; margin-bottom: 16px; letter-spacing: 1px; }
+  .report-header .meta { font-size: 14px; opacity: 0.9; line-height: 2; }
+  .report-header .meta strong { color: #ffda6b; }
+
+  /* Section */
+  section { margin-bottom: 36px; }
+  h2 {
+    font-size: 22px; font-weight: 700; color: #1a3a5c;
+    padding-bottom: 10px; border-bottom: 3px solid var(--accent);
+    margin-bottom: 18px;
+  }
+  h3 { font-size: 18px; font-weight: 700; color: #2c5f8a; margin: 22px 0 10px; }
+  h4 { font-size: 16px; font-weight: 700; color: #3a6a9e; margin: 16px 0 8px; }
+
+  p { margin-bottom: 12px; color: #3a4a5c; }
+  ul, ol { padding-left: 24px; margin-bottom: 12px; color: #3a4a5c; }
+  li { margin-bottom: 6px; }
+
+  blockquote {
+    background: var(--quote-bg); border-left: 4px solid var(--accent);
+    padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0;
+    font-size: 14px; color: #4a5a72;
+  }
+
+  /* Images */
+  figure { margin: 20px 0; text-align: center; }
+  figure img {
+    max-width: 100%; border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid var(--border);
+  }
+  figcaption {
+    margin-top: 8px; font-size: 13px; color: var(--text-secondary); font-style: italic;
+    text-align: left; background: #f9fafb; padding: 10px 14px; border-radius: 6px;
+    border-left: 3px solid #d0d7e2;
+  }
+  figcaption strong { color: #2c5f8a; }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+  table {
+    width: 100%; border-collapse: collapse; font-size: 14px;
+    border-radius: 8px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  }
+  th {
+    background: #eef3f9; padding: 12px 14px; text-align: left;
+    font-weight: 700; color: #1a3a5c; border-bottom: 2px solid #cdd9e8;
+  }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) td { background: var(--table-stripe); }
+  tr:hover td { background: #eef4ff; }
+
+  /* Step cards */
+  .step-card {
+    background: var(--card-bg); border-radius: 10px; padding: 20px 24px;
+    margin: 14px 0; border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .step-card h4 { margin-top: 0; display: flex; align-items: center; gap: 8px; }
+  .step-number {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0;
+  }
+
+  /* Highlight boxes */
+  .highlight-box {
+    background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
+    border: 1px solid #f0d060; border-radius: 10px; padding: 18px 22px; margin: 18px 0;
+  }
+  .highlight-box.blue {
+    background: linear-gradient(135deg, #e8f0fe 0%, #d4e4fc 100%);
+    border-color: #a3c4f3;
+  }
+
+  /* Summary bar */
+  .summary-bar {
+    background: linear-gradient(135deg, #1a3a5c, #2c5f8a);
+    color: #fff; border-radius: 12px; padding: 22px 28px; margin-top: 20px;
+    font-size: 15px; line-height: 1.9;
+  }
+  .summary-bar strong { color: #ffda6b; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  /* TOC */
+  .toc { background: var(--card-bg); border-radius: 10px; padding: 20px 28px; margin-bottom: 36px; border: 1px solid var(--border); }
+  .toc h3 { margin-top: 0; }
+  .toc ol { padding-left: 20px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* Footer */
+  footer { text-align: center; color: #8899aa; font-size: 13px; padding: 30px 0 10px; }
+
+  @media (max-width: 640px) {
+    .container { padding: 12px 14px 40px; }
+    .report-header { padding: 28px 22px; }
+    .report-header h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ============ HEADER ============ -->
+<header class="report-header">
+  <h1>📊 低利率时代的储蓄突围</h1>
+  <div class="meta">
+    <strong>课程</strong>：数据分析与经济决策（ds2026）&emsp;<strong>题目</strong>：存款利率跌破1%，钱往哪放？<br>
+    <strong>小组</strong>：第09组&emsp;
+    <strong>成员</strong>：梁志鹏（25210177）、吴璇子（25210264）、黄悦（25210145）、王鹤洋（25210243）、柯骋（25210150）、罗天（25210207）<br>
+    <strong>日期</strong>：2026-05-23
+  </div>
+</header>
+
+<!-- ============ TOC ============ -->
+<nav class="toc">
+  <h3>📑 目录</h3>
+  <ol>
+    <li><a href="#sec1">摘要</a></li>
+    <li><a href="#sec2">背景：为什么"1%"是一个标志性事件？</a></li>
+    <li><a href="#sec3">核心发现</a>
+      <ol>
+        <li><a href="#sec3-1">应该去哪：收益-风险全景</a></li>
+        <li><a href="#sec3-2">实际去了哪：居民储蓄的真实流向</a></li>
+        <li><a href="#sec3-3">去了之后怎样：这些去处真的比存银行好吗？</a></li>
+        <li><a href="#sec3-4">该怎么选：推荐配置方案</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec4">局限性与展望</a></li>
+    <li><a href="#sec5">结论与建议</a></li>
+    <li><a href="#sec-appendix">附录：数据来源</a></li>
+  </ol>
+</nav>
+
+<!-- ============ 一、摘要 ============ -->
+<section id="sec1">
+  <h2>一、摘要</h2>
+  <p>2024-2026年，中国1年期定期存款利率降至<strong>1.10%</strong>的历史最低水平。对于手握储蓄的城镇居民而言，一个核心问题浮出水面：在1%的存款利率下，还有没有"稳健但收益相对可观"的理财替代方案？如果有，是什么？大家实际上把钱搬去了哪里？这些去处真的比存银行更好吗？</p>
+  <p>本报告通过多维度数据分析，回答了<strong>四个递进的问题</strong>：</p>
+  <ol>
+    <li><strong>应该去哪</strong>：通过收益-风险全景图，识别出短债基金和国债是存款的最佳"平替"</li>
+    <li><strong>实际去了哪</strong>：居民储蓄出现分流——部分转向银行理财，部分涌入储蓄险，部分追逐黄金</li>
+    <li><strong>去了之后怎样</strong>：债券基金在利率下行周期表现优异，但利率反转风险正在累积</li>
+    <li><strong>该怎么选</strong>：给出保守型、稳健型、进取型三种推荐配置方案</li>
+  </ol>
+</section>
+
+<!-- ============ 二、背景 ============ -->
+<section id="sec2">
+  <h2>二、背景：为什么"1%"是一个标志性事件？</h2>
+
+  <h3>2.1 存款利率的历史性下行</h3>
+  <p>中国存款利率经历了一个长达近30年的下行周期。1993年，1年期定存利率高达<strong>10.98%</strong>；到2025年，这一数字降至<strong>1.10%</strong>——跌幅超过90%。这意味着，同样10万元存1年，1993年的利息是10,980元，2025年只有1,100元。</p>
+
+  <figure>
+    <img src="output/charts/fig1_deposit_rate_trend.png" alt="存款利率下行趋势">
+    <figcaption><strong>图1 解读</strong>：红色实线为1年期定存利率，蓝色虚线为1年期贷款利率（LPR）。两条线同步下行，显示利率市场化的深化。1996-2002年是第一轮大幅降息周期（10.98%→1.98%），2014-2015年是第二轮（2.75%→1.50%），2022-2025年是第三轮加速下行（1.65%→1.10%）。</figcaption>
+  </figure>
+
+  <h3>2.2 "资产荒"的宏观背景</h3>
+  <ul>
+    <li><strong>货币政策持续宽松</strong>：M2增速维持高位，但实体需求偏弱</li>
+    <li><strong>房地产退潮</strong>：居民最大资产配置渠道不再单向升值</li>
+    <li><strong>理财破净</strong>：2022-2023年银行理财大面积破净，"保本"信仰被打破</li>
+    <li><strong>债券牛市</strong>：长端利率下行推动债券价格上升</li>
+    <li><strong>黄金走强</strong>：2024-2025年金价屡创新高，避险与抗通胀需求推升</li>
+  </ul>
+
+  <figure>
+    <img src="output/charts/fig2_bond_yield_trend.png" alt="国债收益率走势">
+    <figcaption><strong>图2 解读</strong>：10年期国债收益率从2020年初的3.15%降至2026年5月的1.75%左右，反映市场对长期经济增长的保守预期。收益率曲线整体下移，是债券基金近两年表现优异的核心驱动力。</figcaption>
+  </figure>
+
+  <h3>2.3 实际利率：存款正在"隐形亏损"</h3>
+  <p>实际利率 = 名义利率 − 通胀率（CPI）。当实际利率为负时，存款的实际购买力在缩水。</p>
+
+  <figure>
+    <img src="output/charts/fig3_real_interest_rate.png" alt="实际利率">
+    <figcaption><strong>图3 解读</strong>：绿色线为实际利率（存款−CPI）。2021年以来，名义利率持续低于CPI增速，实际利率多次为负。这意味着：即使表面上"没亏"，存款的实际购买力实际上在下降。1%的存款利率，如果CPI为1.5%，实际亏损就是0.5%。</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 三、核心发现 ============ -->
+<section id="sec3">
+  <h2>三、核心发现</h2>
+
+  <h3 id="sec3-1">3.1 应该去哪：低风险理财渠道收益-风险全景</h3>
+  <p>我们选取了8种主流低风险理财渠道，计算其近3年的年化收益率、年化波动率和最大回撤：</p>
+
+  <figure>
+    <img src="output/charts/fig4_risk_return_scatter.png" alt="收益-风险全景图">
+    <figcaption>
+      <strong>图4 解读</strong>：这是整个分析最核心的图表。横轴是波动率（风险），纵轴是收益率，气泡大小是最大回撤。位于左上方的产品性价比最高。<br><br>
+      <strong>关键发现</strong>：<br>
+      • 1年期定存（1.10%）位于最左下角——零风险但收益最低<br>
+      • 短债基金（如鹏华丰禄）位于左上方——波动率仅1-2%，但年化收益3-4%，性价比显著优于存款<br>
+      • 货币基金平均收益已降至1.24%，与存款利差几乎消失<br>
+      • 黄金收益最高但波动也最大（年化波动率约15%），不属于"稳健"选择<br>
+      • <strong>最佳平替</strong>：短债基金和2年期国债——在可控风险下提供2.5%-3.5%的年化收益
+    </figcaption>
+  </figure>
+
+  <h3 id="sec3-2">3.2 实际去了哪：居民储蓄的真实流向</h3>
+  <p>M2货币供应量持续扩张，但增速放缓：</p>
+
+  <figure>
+    <img src="output/charts/fig5_m2_trend.png" alt="M2趋势">
+    <figcaption>
+      <strong>图5 解读</strong>：M2总量已突破353万亿元（2026年4月），但同比增速从2020年的10%以上降至2025-2026年的8.5%左右。"钱很多但不愿花"——居民持币观望情绪浓厚。<br><br>
+      结合基金业协会数据，我们发现储蓄出现三个主要分流方向：<br>
+      1. <strong>银行理财</strong>：固收类产品规模回升，2024年四季度环比增长约5%<br>
+      2. <strong>储蓄险</strong>：增额终身寿险热卖，2024年保费收入增速超15%<br>
+      3. <strong>黄金</strong>：黄金ETF规模2024年暴增超过40%
+    </figcaption>
+  </figure>
+
+  <h3 id="sec3-3">3.3 去了之后怎样：这些去处真的比存银行好吗？</h3>
+
+  <h4>债券基金表现</h4>
+  <figure>
+    <img src="output/charts/fig7_bond_fund_nav.png" alt="债券基金净值">
+    <figcaption>
+      <strong>图7 解读</strong>：2023年以来，代表性债券基金均实现了正收益，净值稳步上升。鹏华丰禄（003327）、易方达信用债A（000032）等基金2023-2026年累计收益约8-12%，年化2.5-4%，显著跑赢1%存款。其中短债基金（如鹏华丰禄）波动最小，适合作为存款的直接替代品。<br><br>
+      <strong>⚠️ 但风险不容忽视</strong>：债券基金的收益主要来自利率下行带来的债券价格上涨。如果未来利率反转上行，债券基金将面临净值回撤。历史经验显示，10年期国债收益率每上行50bp，债券基金平均回撤约2-3%。
+    </figcaption>
+  </figure>
+
+  <h4>黄金表现</h4>
+  <figure>
+    <img src="output/charts/fig6_gold_price.png" alt="黄金价格">
+    <figcaption><strong>图6 解读</strong>：2020年以来黄金从约350元/克涨至最高约1250元/克（2026年1月），涨幅约260%。但作为避险资产，黄金价格波动较大，2022年曾回调约15%。在高位追入黄金，需警惕回调风险。</figcaption>
+  </figure>
+
+  <h4>货币基金表现</h4>
+  <figure>
+    <img src="output/charts/fig8_money_fund_yield_dist.png" alt="货币基金收益率分布">
+    <figcaption><strong>图8 解读</strong>：531只货币基金近1年平均收益率仅1.24%，529只（99.6%）低于1.5%，所有产品均跌破2%。七日年化收益率均值更是只有1.14%，与1.10%的存款利率几乎持平。"余额宝效应"已彻底消退——货币基金完全不再是存款的有效替代。</figcaption>
+  </figure>
+
+  <h3 id="sec3-4">3.4 该怎么选：推荐配置方案</h3>
+  <p>基于上述分析，我们为不同风险偏好的投资者设计了三套配置方案：</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>配置类型</th><th>目标人群</th><th>推荐配比</th><th>预期年化收益</th><th>预期最大回撤</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>保守型</strong></td><td>只接受存款级风险</td><td>50%大额存单+30%短债基金+20%货币基金</td><td>1.8%-2.2%</td><td>&lt;1%</td></tr>
+      <tr><td><strong>稳健型</strong></td><td>可接受小幅波动</td><td>40%短债基金+25%国债+20%货币基金+10%银行理财+5%黄金</td><td>2.5%-3.5%</td><td>2%-3%</td></tr>
+      <tr><td><strong>进取型</strong></td><td>可承受5-10%回撤</td><td>30%短债基金+20%中长债基金+15%黄金+15%权益基金+20%国债</td><td>3.5%-5.0%</td><td>5%-8%</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="highlight-box blue">
+    <strong>💡 核心建议</strong>
+    <ul style="margin-bottom:0;">
+      <li>如果目标是"比存款多赚1-2%且不亏本金"，选择<strong>稳健型配置</strong></li>
+      <li>短债基金是当前环境下性价比最高的单一替代品</li>
+      <li>不要全部押注一种资产，通过简单组合可以有效分散风险</li>
+      <li>黄金可配置5-10%作为避险资产，但不宜超过15%</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 四、局限性与展望 ============ -->
+<section id="sec4">
+  <h2>四、局限性与展望</h2>
+  <ol>
+    <li><strong>历史收益不代表未来</strong>：债券基金在利率下行周期表现优异，但利率反转后可能亏损。10年期国债收益率每上行50bp，债券基金平均回撤约2-3%</li>
+    <li><strong>数据可得性</strong>：银行理财详细收益数据不如公募基金透明；部分估算数据（如储蓄险、银行理财规模）来自行业报告而非直接爬取</li>
+    <li><strong>个人差异大</strong>：不同人群的资金规模和流动性需求差异巨大，本报告建议仅作为参考框架</li>
+    <li><strong>预测不确定性</strong>：利率走势、通胀水平、政策变化均难以准确预测</li>
+  </ol>
+</section>
+
+<!-- ============ 五、结论与建议 ============ -->
+<section id="sec5">
+  <h2>五、结论与建议</h2>
+
+  <h3>5.1 核心结论</h3>
+  <p>基于对存款利率、国债收益率、CPI、M2、债券基金净值、货币基金收益、黄金价格等数据的分析，本报告得出以下四点核心发现：</p>
+
+  <ol>
+    <li><strong>1%存款利率确实是历史最低水平</strong>——从1993年的10.98%降至2024年10月的1.10%，30年跌幅90%。更关键的是，实际利率（存款利率−CPI）多次为负，意味着存款的实际购买力在缩水。</li>
+    <li><strong>短债基金是性价比最高的"平替"</strong>——在1-2%的年化波动率下提供3-4%的年化收益，显著优于1%存款和1.24%的货币基金。代表性产品（鹏华丰禄、易方达信用债A等）2023-2026年净值持续上涨，累计收益约8-12%。</li>
+    <li><strong>黄金不是"稳健"选择</strong>——虽然2020年以来涨了约260%，但年化波动率达15%左右，不适合作为存款的直接替代品。在高位追入需警惕回调风险。</li>
+    <li><strong>简单组合优于单一选择</strong>——没有完美的单一替代品，但通过合理搭配，可以在控制风险的前提下显著提升收益。</li>
+  </ol>
+
+  <h3>5.2 行动建议</h3>
+
+  <div class="step-card">
+    <h4><span class="step-number">1</span> 区分"要用的钱"和"不用的钱"</h4>
+    <ul style="margin-bottom:0;">
+      <li>3-6个月内要用的钱 → 货币基金（流动性最好，约1.24%的收益，但胜在T+1即可赎回）</li>
+      <li>1年内不会动的钱 → 短债基金（2-3%的年化收益，波动可控）</li>
+      <li>3年以上长期不动的钱 → 国债或组合配置</li>
+    </ul>
+  </div>
+
+  <div class="step-card">
+    <h4><span class="step-number">2</span> 按风险承受能力选择配置方案</h4>
+    <div class="table-wrap">
+    <table>
+      <thead><tr><th>如果你能接受的最大亏损</th><th>推荐方案</th><th>预期年化收益</th><th>操作难度</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>几乎不能亏（&lt;1%）</strong></td>
+          <td>保守型：50%大额存单+30%短债基金+20%货币基金</td>
+          <td><strong>1.8%-2.2%</strong></td>
+          <td>★☆☆☆☆</td>
+        </tr>
+        <tr>
+          <td><strong>可接受2-3%波动</strong></td>
+          <td>稳健型：40%短债基金+25%国债+20%货币基金+10%银行理财+5%黄金</td>
+          <td><strong>2.5%-3.5%</strong></td>
+          <td>★★☆☆☆</td>
+        </tr>
+        <tr>
+          <td><strong>可接受5-8%回撤</strong></td>
+          <td>进取型：30%短债基金+20%中长债基金+15%黄金+15%权益基金+20%国债</td>
+          <td><strong>3.5%-5.0%</strong></td>
+          <td>★★★☆☆</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <h4><span class="step-number">3</span> 关注利率转向的早期信号</h4>
+    <p style="margin-bottom:0;">债券基金的收益主要来自利率下行。如果出现以下信号，应考虑降低债券基金仓位：</p>
+    <ul style="margin-bottom:0;">
+      <li>10年期国债收益率连续2个月上行超过20bp</li>
+      <li>CPI同比持续超过2.5%</li>
+      <li>央行释放加息信号</li>
+    </ul>
+  </div>
+
+  <div class="step-card">
+    <h4><span class="step-number">4</span> 不要被「高点焦虑」绑架</h4>
+    <p style="margin-bottom:0;">黄金在2026年初达到约1250元/克的历史高点后出现震荡回调至995元/克（2026年5月），短期追高者可能面临浮亏。正确的做法是：将黄金视为组合中的"压舱石"（5-10%仓位），而非投机工具。</p>
+  </div>
+
+  <h3>5.3 一句话总结</h3>
+  <div class="summary-bar">
+    在1%的存款利率时代，"钱该往哪放"没有标准答案，但有<strong>可量化的方向</strong>：用短债基金替代存款、用简单组合替代押注单一产品、用长期视角替代短期择时。最稳健的方案（保守型）也比纯存款多赚<strong>60%以上</strong>——10万元多赚700-1200元/年，<strong>值得行动</strong>。
+  </div>
+</section>
+
+<!-- ============ 附录 ============ -->
+<section id="sec-appendix">
+  <h2>附录：数据来源</h2>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>数据</th><th>来源</th></tr></thead>
+    <tbody>
+      <tr><td>存款利率</td><td>中国人民银行（手动整理）</td></tr>
+      <tr><td>LPR、国债收益率、CPI、M2</td><td>akshare</td></tr>
+      <tr><td>基金净值</td><td>akshare / 天天基金网</td></tr>
+      <tr><td>黄金价格</td><td>上海期货交易所（akshare）</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<hr>
+
+<footer>
+  <p>报告完成时间：2026-05-23 &emsp;| &emsp;第09组 &emsp;| &emsp;数据分析与经济决策（ds2026）</p>
+</footer>
+
+</div>
+</body>
+</html>
